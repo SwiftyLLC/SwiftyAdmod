@@ -12,11 +12,19 @@ let package = Package(
             name: "SwiftyAdmod",
             targets: ["SwiftyAdmod"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/googleads/swift-package-manager-google-mobile-ads", from: "11.2.0")
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
+//        .target(
+//            name: "SwiftyAdmod"),
         .target(
-            name: "SwiftyAdmod"),
+            name: "SwiftyAdmod", dependencies: [
+                .product(name: "GoogleMobileAds", package: "swift-package-manager-google-mobile-ads"),
+            ]
+        ),
         .testTarget(
             name: "SwiftyAdmodTests",
             dependencies: ["SwiftyAdmod"]),
