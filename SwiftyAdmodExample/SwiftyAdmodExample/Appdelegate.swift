@@ -25,8 +25,8 @@ class AppDelegate: NSObject, ObservableObject, UIApplicationDelegate {
             rewardId: AdmobConfig.rewardId,
             openId: AdmobConfig.openAppId
         )
-        
-        GADMobileAds.sharedInstance().requestConfiguration.testDeviceIdentifiers = ["9eb6fb21e592f1f37b96147f8356e9b0"]
+        SwiftyAdmod.configTestDevice(identifiers: ["9eb6fb21e592f1f37b96147f8356e9b0"])
+        //GADMobileAds.sharedInstance().requestConfiguration.testDeviceIdentifiers = ["9eb6fb21e592f1f37b96147f8356e9b0"]
 
         SwiftyAdmod.loadInterstitial()
         SwiftyAdmod.loadReward()
@@ -50,7 +50,6 @@ class AppDelegate: NSObject, ObservableObject, UIApplicationDelegate {
 
     func applicationWillEnterForeground() {
         print("applicationWillEnterForeground")
-        //OpenAppAds.shared().requestAppOpenAd()
         SwiftyAdmod.loadOpenApp()
     }
 

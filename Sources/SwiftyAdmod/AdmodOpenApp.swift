@@ -16,13 +16,19 @@ final class AdmodOpenApp: NSObject, GADFullScreenContentDelegate {
         return sharedInstance
     }
 
+    /// Seconds, default 10m
+    var configShowTime: Int = 10 * 60
     
     //Open app Ads
     var appOpenAd: GADAppOpenAd?
     private var loadTime: Date = Date.now
     private var displayOpenAdsTime: Date?
     
-    func requestAppOpenAd() {
+    func requestOpenAppAds() {
+        if self.appOpenAd != nil && self.wasLoadTimeLessThanNHoursAgo(n: 4, date: self.loadTime) {
+            print("[AdmodOpenApp] -- open app ads loaded, cancel request new ads")
+            return
+        }
         self.appOpenAd = nil;
         GADAppOpenAd.load(withAdUnitID: AdmodManager.shared().openId, request: AdmodManager.shared().makeRequest()) { ads, err in
             if (err != nil) {
@@ -47,8 +53,8 @@ final class AdmodOpenApp: NSObject, GADFullScreenContentDelegate {
         //check time ads expired
         if self.appOpenAd != nil && self.wasLoadTimeLessThanNHoursAgo(n: 4, date: self.loadTime) {
             if let date = self.displayOpenAdsTime {
-                if self.wasLoadTimeLessThanNHoursAgo(n: 1, date: date) {
-                    debugPrint("Ads open App present on 1 hour")
+                if self.wasLoadTimeLessThanSecondAgo(n: self.configShowTime, date: date) {
+                    debugPrint("[OPEN ADS] Cancel show Ads open App present on configShowTime \(configShowTime) seconds")
                     return
                 }
             }
@@ -56,9 +62,25 @@ final class AdmodOpenApp: NSObject, GADFullScreenContentDelegate {
             self.displayOpenAdsTime = Date.now
         } else {
             // If you don't have an ad ready, request one.
-            self.requestAppOpenAd()
+            self.requestOpenAppAds()
         }
     }
+    
+    //Ads delegate
+    func ad(_ ad: GADFullScreenPresentingAd, didFailToPresentFullScreenContentWithError error: Error) {
+        self.requestOpenAppAds()
+    }
+    
+    func adWillPresentFullScreenContent(_ ad: GADFullScreenPresentingAd) {
+        debugPrint("adWillPresentFullScreenContent")
+    }
+    
+    func adDidDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
+        debugPrint("adDidDismissFullScreenContent")
+        self.requestOpenAppAds()
+    }
+    
+    // MARK: - Private function
     
     private func wasLoadTimeLessThanNHoursAgo(n : Int, date: Date) -> Bool {
         let now = NSDate.now
@@ -69,19 +91,11 @@ final class AdmodOpenApp: NSObject, GADFullScreenContentDelegate {
         return intervalInHours < Double(n)
     }
 
-
-    //Ads delegate
-    func ad(_ ad: GADFullScreenPresentingAd, didFailToPresentFullScreenContentWithError error: Error) {
-        self.requestAppOpenAd()
+    private func wasLoadTimeLessThanSecondAgo(n : Int, date: Date) -> Bool {
+        let now = NSDate.now
+        let timeIntervalBetweenNowAndLoadTime: TimeInterval = now.timeIntervalSince(date)
+//        let secondsPerHour: Double = 3600.0
+//        let intervalInHours: Double = timeIntervalBetweenNowAndLoadTime / secondsPerHour
+        return timeIntervalBetweenNowAndLoadTime < Double(n)
     }
-    
-    func adWillPresentFullScreenContent(_ ad: GADFullScreenPresentingAd) {
-        debugPrint("adWillPresentFullScreenContent")
-    }
-    
-    func adDidDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
-        debugPrint("adDidDismissFullScreenContent")
-        self.requestAppOpenAd()
-    }
-
 }

@@ -21,16 +21,17 @@ class AdmodManager: NSObject, GADFullScreenContentDelegate {
     var rewardId: String = ""
     var openId: String = ""
     
+    var showInterstitialAfterLoaded = false
     
     var interstitial: GADInterstitialAd?
     private var completeFullScreenAds: AdmodVoidComplete?
 
+    
+    var configInterstitialCount: Int = 5
     private var countInterstitial: Int = 0
     private var interstitialDiscover: GADInterstitialAd?
     private var completeDiscover: AdmodVoidComplete?
-    
-    private var isShowWellcomeAds = false
-    
+
     //Rewawrd
     var rewardedAds: AdmodRewarded?
 
@@ -55,7 +56,7 @@ class AdmodManager: NSObject, GADFullScreenContentDelegate {
     
     func showInterstitialAdDiscover(complete: @escaping AdmodVoidComplete) {
         completeDiscover = complete
-        if self.countInterstitial != 0 && interstitialDiscover != nil && self.countInterstitial < 5 {
+        if self.countInterstitial != 0 && interstitialDiscover != nil && self.countInterstitial <= configInterstitialCount {
             self.countInterstitial += 1
             complete()
             return
@@ -124,8 +125,7 @@ class AdmodManager: NSObject, GADFullScreenContentDelegate {
                     self.interstitial?.fullScreenContentDelegate = self
                     print("loadInterstitialAd to load interstitial ad success!")
                     
-                    if self.isShowWellcomeAds == false {
-                        self.isShowWellcomeAds = true
+                    if self.showInterstitialAfterLoaded {
                         self.showInterstitialAd()
                     }
                 }
