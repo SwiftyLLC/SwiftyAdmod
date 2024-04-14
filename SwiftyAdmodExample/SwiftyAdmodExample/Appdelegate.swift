@@ -31,6 +31,8 @@ class AppDelegate: NSObject, ObservableObject, UIApplicationDelegate {
         SwiftyAdmod.loadInterstitial()
         SwiftyAdmod.loadReward()
         
+        SwiftyAdmod.loadConsentForm()
+        
         return true
     }
     
