@@ -114,6 +114,10 @@ public class SwiftyAdmod: NSObject {
         AdmodManager.shared().showInterstitialAd(complete: complete)
     }
     
+    public class func showInterstitialWithCount(complete: AdmodVoidComplete?) {
+        AdmodManager.shared().showInterstitialAdDiscover(complete: complete)
+    }
+
     public class func showOpenApp() {
         AdmodOpenApp.shared().tryToPresentAd()
     }

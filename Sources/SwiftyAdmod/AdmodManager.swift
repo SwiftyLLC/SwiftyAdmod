@@ -54,11 +54,14 @@ class AdmodManager: NSObject, GADFullScreenContentDelegate {
         }
     }
     
-    func showInterstitialAdDiscover(complete: @escaping AdmodVoidComplete) {
+    //TODO: - update to bool
+    func showInterstitialAdDiscover(complete: AdmodVoidComplete? = nil) {
         completeDiscover = complete
         if self.countInterstitial != 0 && interstitialDiscover != nil && self.countInterstitial <= configInterstitialCount {
             self.countInterstitial += 1
-            complete()
+            if let _action = complete {
+                _action()
+            }
             return
         }
         if interstitialDiscover != nil {
@@ -66,10 +69,14 @@ class AdmodManager: NSObject, GADFullScreenContentDelegate {
                 interstitialDiscover?.present(fromRootViewController: controller)
                 self.countInterstitial = 1
             } else {
-                complete()
+                if let _action = complete {
+                    _action()
+                }
             }
         } else {
-            complete()
+            if let _action = complete {
+                _action()
+            }
             loadInterstitialAdDiscover()
         }
     }
