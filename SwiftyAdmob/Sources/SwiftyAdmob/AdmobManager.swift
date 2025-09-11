@@ -196,6 +196,10 @@ class AdmobManager: NSObject, FullScreenContentDelegate {
     /// Tells the delegate that the ad dismissed full screen content.
     func adDidDismissFullScreenContent(_ ad: FullScreenPresentingAd) {
         print("Ad did dismiss full screen content.")
+        //  Only show first time
+        if showInterstitialAfterLoaded {
+            showInterstitialAfterLoaded = false
+        }
         if (ad as? InterstitialAd)  == self.interstitial {
             self.interstitial = nil
             self.loadInterstitialAd()
